@@ -1,7 +1,6 @@
 # YouTube Video Summarizer for Obsidian
 
-Generate AI-powered summaries of YouTube videos directly in Obsidian using Google's Gemini AI.
-
+Generate AI-powered summaries of YouTube videos directly in Obsidian using Claude AI
 ## Demo
 
 ![Demo](assets/demo.gif)
@@ -137,4 +136,13 @@ Lower values (closer to 0) produce more consistent and focused summaries, while 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Credits
+
+This project is a maintained and updated version of  https://github.com/mbramani/obsidian-yt-video-summarizer ). Deep gratitude to the original author for their excellent open-source contribution!
+
+**Recent Updates & Improvements:**
+- 🚀 **Core Upgrade**: Updated the InnerTube client to enhance the stability of video data extraction.
+- 🤖 **Expanded AI Support**: Added full support for the latest **Claude** (Anthropic) model series.
+- 🔧 **Stability Fixes**: Resolved issues where notes might fail to save correctly during asynchronous operations.
 
