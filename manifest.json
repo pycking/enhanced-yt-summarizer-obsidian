@@ -1,0 +1,10 @@
+{
+	"id": "yt-video-summarizer",
+	"name": "YouTube Video Summarizer",
+	"minAppVersion": "0.15.0",
+	"version": "1.2.1",
+	"description": "Summarize YouTube videos using Gemini AI. Extract transcripts, generate summaries, and create structured notes.",
+	"author": "Sam Peng",
+	"authorUrl": "https://github.com/pycking",
+	"isDesktopOnly": false
+}
