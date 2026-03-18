@@ -2,7 +2,7 @@
 	"id": "enhanced-yt-summarizer",
 	"name": "Enhanced YT Summarizer",
 	"minAppVersion": "0.15.0",
-	"version": "1.2.1",
+	"version": "1.3.0",
 	"description": "Summarize YouTube videos using Claude, Gemini, OpenAI and other AI providers. Extract transcripts, generate summaries, and create structured notes.",
 	"author": "Sam Peng",
 	"authorUrl": "https://github.com/pycking",
