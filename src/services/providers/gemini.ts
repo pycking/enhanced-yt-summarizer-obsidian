@@ -41,7 +41,7 @@ export class GeminiProvider implements AIModelProvider {
 
         try {
             const result = await model.generateContent(prompt);
-            const response = await result.response;
+            const response = result.response;
             let text = response.text();
             
             if (response.candidates && response.candidates[0] && response.candidates[0].finishReason === 'MAX_TOKENS') {

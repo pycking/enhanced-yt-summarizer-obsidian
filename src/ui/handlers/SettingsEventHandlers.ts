@@ -31,12 +31,11 @@ export class SettingsEventHandlers {
             this.callbacks.onActiveModelChanged?.();
         } catch (error) {
             console.error('Failed to set active model:', error, 'Selected model:', value);
-            new Notice(`Failed to set active model: ${error.message}`);
+            new Notice(`Failed to set active model: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
     handleAccordionToggle(accordion: HTMLElement): void {
-        const header = accordion.querySelector('.yt-summarizer-settings__provider-header') as HTMLElement;
         const content = accordion.querySelector('.yt-summarizer-settings__provider-content') as HTMLElement;
         const icon = accordion.querySelector('.yt-summarizer-settings__collapse-icon') as HTMLElement;
 
@@ -59,7 +58,7 @@ export class SettingsEventHandlers {
             this.plugin.settings.addProvider(provider);
             this.callbacks.onProviderAdded?.(provider);
         } catch (error) {
-            new Notice(`Failed to add provider: ${error.message}`);
+            new Notice(`Failed to add provider: ${error instanceof Error ? error.message : String(error)}`);
             throw error;
         }
     }
@@ -71,7 +70,7 @@ export class SettingsEventHandlers {
             new Notice(`Provider ${provider.name} updated successfully`);
         } catch (error) {
             console.error('Error updating provider:', error);
-            new Notice(`Failed to update provider: ${error.message}`);
+            new Notice(`Failed to update provider: ${error instanceof Error ? error.message : String(error)}`);
             throw error;
         }
     }
@@ -99,7 +98,7 @@ export class SettingsEventHandlers {
             new Notice(`Provider ${provider.name} deleted successfully`);
         } catch (error) {
             console.error('Error deleting provider:', error);
-            new Notice(`Failed to delete provider: ${error.message}`);
+            new Notice(`Failed to delete provider: ${error instanceof Error ? error.message : String(error)}`);
             throw error;
         }
     }
@@ -109,7 +108,7 @@ export class SettingsEventHandlers {
             this.plugin.settings.addModel(model);
             this.callbacks.onModelAdded?.(model);
         } catch (error) {
-            new Notice(`Failed to add model: ${error.message}`);
+            new Notice(`Failed to add model: ${error instanceof Error ? error.message : String(error)}`);
             throw error;
         }
     }
@@ -123,7 +122,7 @@ export class SettingsEventHandlers {
             );
             this.callbacks.onModelUpdated?.(model);
         } catch (error) {
-            new Notice(`Failed to update model: ${error.message}`);
+            new Notice(`Failed to update model: ${error instanceof Error ? error.message : String(error)}`);
             throw error;
         }
     }
@@ -134,7 +133,7 @@ export class SettingsEventHandlers {
             this.callbacks.onModelDeleted?.(model);
         } catch (error) {
             console.error('Error deleting model:', error);
-            new Notice(`Failed to delete model: ${error.message}`);
+            new Notice(`Failed to delete model: ${error instanceof Error ? error.message : String(error)}`);
             throw error;
         }
     }
@@ -171,4 +170,4 @@ export class SettingsEventHandlers {
             console.error('Failed to save API key:', error);
         }
     }
-} 
+}

@@ -19,11 +19,11 @@ export class EditModelModal extends Modal {
         contentEl.empty();
         contentEl.addClass('yt-summarizer-settings__modal');
 
-        contentEl.createEl('h2', { text: 'Edit Model' });
+        contentEl.createEl('h2', { text: 'Edit model' });
 
         // Model Name (read-only)
         new Setting(contentEl)
-            .setName('Model Name')
+            .setName('Model name')
             .setDesc('Model identifier (cannot be changed)')
             .addText(text =>
                 text
@@ -33,7 +33,7 @@ export class EditModelModal extends Modal {
 
         // Display Name
         new Setting(contentEl)
-            .setName('Display Name')
+            .setName('Display name')
             .setDesc('Enter display name (optional)')
             .addText(text =>
                 text
@@ -57,7 +57,7 @@ export class EditModelModal extends Modal {
                             await this.handlers.handleModelEdit(updatedModel);
                             this.close();
                         } catch (error) {
-                            console.error('Failed to update model:', error);
+                            console.error('Failed to update model:', error instanceof Error ? error.message : String(error));
                         }
                     }))
             .addButton(btn =>

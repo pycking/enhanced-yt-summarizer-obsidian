@@ -334,7 +334,7 @@ export class SettingsManager implements PluginSettings {
             return null;
         }
 
-        const { providerName: providerName, modelName: modelName } = this.parseModelId(modelId);
+        const { providerName, modelName } = this.parseModelId(modelId);
         const provider = this.settings.providers.find(p => p.name === providerName);
         if (!provider) return null;
         const model = provider.models.find(m => m.name === modelName);
@@ -360,10 +360,6 @@ export class SettingsManager implements PluginSettings {
         const [provider, ...modelParts] = modelId.split(':');
         const model = modelParts.join(':');
         return { providerName: provider, modelName: model };
-    }
-
-    private makeModelId(provider: string, model: string): string {
-        return `${provider}:${model}`;
     }
 
     public validateModelId(modelId: string): boolean {

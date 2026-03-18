@@ -8,6 +8,36 @@ import {
 } from 'src/types';
 import { requestUrl } from 'obsidian';
 
+/** Represents a single caption track from YouTube's player API */
+interface CaptionTrack {
+	languageCode: string;
+	baseUrl: string;
+	name?: {
+		runs?: Array<{ text: string }>;
+	};
+}
+
+/** Represents the captions section in YouTube's player API response */
+interface CaptionsData {
+	captionTracks: CaptionTrack[];
+}
+
+/** Represents YouTube's player API response */
+interface PlayerData {
+	videoDetails?: {
+		title?: string;
+		author?: string;
+		channelId?: string;
+	};
+	captions?: {
+		playerCaptionsTracklistRenderer?: CaptionsData;
+	};
+	playabilityStatus?: {
+		status?: string;
+		reason?: string;
+	};
+}
+
 /**
  * Service class for interacting with YouTube videos.
  * Provides methods to fetch video thumbnails and transcripts.
@@ -20,7 +50,7 @@ export class YouTubeService {
 	/**
 	 * Default InnerTube client configuration.
 	 *
-	 * These values were last verified against YouTube’s API on 2026-03-17
+	 * These values were last verified against YouTube's API on 2026-03-17
 	 * and match the values used by youtube-transcript-api (Python).
 	 *
 	 * If requests start failing with 400/403 errors or unexpected behavior,
@@ -46,7 +76,7 @@ export class YouTubeService {
 		}
 	}
 
-	// Use ANDROID client like youtube-transcript-api does - it’s less restricted
+	// Use ANDROID client like youtube-transcript-api does - it's less restricted
 	private static get INNERTUBE_CONTEXT() {
 		return {
 			client: {
@@ -92,7 +122,7 @@ export class YouTubeService {
 	 * This mimics how youtube-transcript-api (Python) works:
 	 * 1. Fetch player data with ANDROID client to get caption tracks
 	 * 2. Fetch transcript directly from caption track baseUrl
-	 * 
+	 *
 	 * @param url - Full YouTube video URL
 	 * @param langCode - Language code for caption track (default: 'en')
 	 * @returns Promise containing video metadata and transcript
@@ -107,11 +137,11 @@ export class YouTubeService {
 			const videoId = this.extractMatch(url, VIDEO_ID_REGEX);
 			if (!videoId) throw new Error('Invalid YouTube URL');
 
-			console.log(`Fetching transcript for video: ${videoId}`);
+			console.debug(`Fetching transcript for video: ${videoId}`);
 
 			// Step 1: Fetch player data to get caption tracks
 			const playerData = await this.fetchPlayerData(videoId);
-			
+
 			// Extract video metadata
 			const title = playerData.videoDetails?.title || 'Unknown';
 			const author = playerData.videoDetails?.author || 'Unknown';
@@ -126,11 +156,11 @@ export class YouTubeService {
 			// Step 3: Find the best matching caption track
 			const captionTrack = this.findCaptionTrack(captionsData.captionTracks, langCode);
 			if (!captionTrack) {
-				const availableLangs = captionsData.captionTracks.map((t: any) => t.languageCode).join(', ');
+				const availableLangs = captionsData.captionTracks.map((t: CaptionTrack) => t.languageCode).join(', ');
 				throw new Error(`No transcript found for language '${langCode}'. Available: ${availableLangs}`);
 			}
 
-			console.log(`Found caption track: ${captionTrack.name?.runs?.[0]?.text || captionTrack.languageCode}`);
+			console.debug(`Found caption track: ${captionTrack.name?.runs?.[0]?.text || captionTrack.languageCode}`);
 
 			// Step 4: Fetch the actual transcript from the caption URL
 			const transcriptUrl = captionTrack.baseUrl;
@@ -144,8 +174,8 @@ export class YouTubeService {
 				channelUrl: channelId ? `https://www.youtube.com/channel/${channelId}` : '',
 				lines,
 			};
-		} catch (error: any) {
-			throw new Error(`Failed to fetch transcript: ${error.message}`);
+		} catch (error: unknown) {
+			throw new Error(`Failed to fetch transcript: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
@@ -176,7 +206,7 @@ export class YouTubeService {
 	 * Fetches player data from YouTube's InnerTube API.
 	 * Dynamically extracts the API key from the watch page each time.
 	 */
-	private async fetchPlayerData(videoId: string): Promise<any> {
+	private async fetchPlayerData(videoId: string): Promise<PlayerData> {
 		const apiKey = await this.fetchInnertubeApiKey(videoId);
 
 		const requestBody = {
@@ -194,9 +224,9 @@ export class YouTubeService {
 			body: JSON.stringify(requestBody),
 		});
 
-		let data: any;
+		let data: PlayerData;
 		try {
-			data = JSON.parse(response.text);
+			data = JSON.parse(response.text) as PlayerData;
 		} catch (error) {
 			throw new Error(
 				`Failed to parse YouTube player data JSON: ${
@@ -225,22 +255,22 @@ export class YouTubeService {
 	/**
 	 * Finds the best matching caption track for the requested language
 	 */
-	private findCaptionTrack(captionTracks: any[], langCode: string): any {
+	private findCaptionTrack(captionTracks: CaptionTrack[], langCode: string): CaptionTrack | null {
 		// First try exact match
-		let track = captionTracks.find((t: any) => t.languageCode === langCode);
+		let track = captionTracks.find((t: CaptionTrack) => t.languageCode === langCode);
 		if (track) return track;
 
 		// Try matching language prefix (e.g., 'en' matches 'en-US')
-		track = captionTracks.find((t: any) => t.languageCode.startsWith(langCode + '-'));
+		track = captionTracks.find((t: CaptionTrack) => t.languageCode.startsWith(langCode + '-'));
 		if (track) return track;
 
 		// Try finding track where requested lang is a prefix (e.g., 'en-US' when looking for 'en')
-		track = captionTracks.find((t: any) => langCode.startsWith(t.languageCode + '-'));
+		track = captionTracks.find((t: CaptionTrack) => langCode.startsWith(t.languageCode + '-'));
 		if (track) return track;
 
 		// Fall back to first available track
 		if (captionTracks.length > 0) {
-			console.log(`Language '${langCode}' not found, falling back to '${captionTracks[0].languageCode}'`);
+			console.debug(`Language '${langCode}' not found, falling back to '${captionTracks[0].languageCode}'`);
 			return captionTracks[0];
 		}
 
@@ -272,20 +302,20 @@ export class YouTubeService {
 		// YouTube uses two different formats:
 		// Format 1: <text start="0.0" dur="1.54">Hey there</text>
 		// Format 2: <p t="1360" d="1680">Text here</p>
-		
+
 		// Try format 2 first (newer format with <p> tags, times in milliseconds)
 		// Match entire <p> tag without assuming attribute order
 		const pTagRegex = /<p\s+([^>]+)>([\s\S]*?)<\/p>/g;
 		let match;
-		
+
 		while ((match = pTagRegex.exec(xmlContent)) !== null) {
 			const attributes = match[1];
 			const content = match[2];
-			
+
 			// Extract t and d attributes independently
 			const tMatch = attributes.match(/\bt="(\d+)"/);
 			const dMatch = attributes.match(/\bd="(\d+)"/);
-			
+
 			if (tMatch && dMatch) {
 				const start = parseInt(tMatch[1]); // Already in milliseconds
 				const duration = parseInt(dMatch[1]);
@@ -305,15 +335,15 @@ export class YouTubeService {
 		if (lines.length === 0) {
 			// Match entire <text> tag without assuming attribute order
 			const textRegex = /<text\s+([^>]+)>([\s\S]*?)<\/text>/g;
-			
+
 			while ((match = textRegex.exec(xmlContent)) !== null) {
 				const attributes = match[1];
 				const content = match[2];
-				
+
 				// Extract start and dur attributes independently
 				const startMatch = attributes.match(/\bstart="([^"]+)"/);
 				const durMatch = attributes.match(/\bdur="([^"]+)"/);
-				
+
 				if (startMatch && durMatch) {
 					const start = parseFloat(startMatch[1]) * 1000; // Convert to milliseconds
 					const duration = parseFloat(durMatch[1]) * 1000;

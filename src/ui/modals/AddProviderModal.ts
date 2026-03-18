@@ -21,11 +21,11 @@ export class AddProviderModal extends Modal {
         contentEl.empty();
         contentEl.addClass('yt-summarizer-settings__modal');
 
-        contentEl.createEl('h2', { text: 'Add Provider' });
+        contentEl.createEl('h2', { text: 'Add provider' });
 
         // Provider Name
         new Setting(contentEl)
-            .setName('Provider Name')
+            .setName('Provider name')
             .setDesc('Enter provider name')
             .addText(text =>
                 text
@@ -36,7 +36,7 @@ export class AddProviderModal extends Modal {
 
         // Provider Type
         new Setting(contentEl)
-            .setName('Provider Type')
+            .setName('Provider type')
             .setDesc('Select provider type')
             .addDropdown(dropdown => {
                 dropdown
@@ -48,7 +48,7 @@ export class AddProviderModal extends Modal {
 
         // API Key
         new Setting(contentEl)
-            .setName('API Key')
+            .setName('API key')
             .setDesc('Enter API key')
             .addText(text =>
                 text
@@ -59,7 +59,7 @@ export class AddProviderModal extends Modal {
 
         // URL (Optional)
         new Setting(contentEl)
-            .setName('URL (Optional)')
+            .setName('URL (optional)')
             .setDesc('Enter custom API URL')
             .addText(text =>
                 text
@@ -87,7 +87,7 @@ export class AddProviderModal extends Modal {
                             await this.handlers.handleProviderAdd(newProvider);
                             this.close();
                         } catch (error) {
-                            console.error('Failed to add provider:', error);
+                            console.error('Failed to add provider:', error instanceof Error ? error.message : String(error));
                         }
                     }))
             .addButton(btn =>

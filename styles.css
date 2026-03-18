@@ -352,3 +352,8 @@ If your plugin does not need CSS, delete this file.
 	margin-top: var(--size-4-6);
 	margin-bottom: var(--size-4-3);
 }
+
+/* Modal Message */
+.yt-summarizer-settings__modal-message {
+	margin-bottom: var(--size-4-4);
+}

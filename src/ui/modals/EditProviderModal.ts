@@ -24,7 +24,7 @@ export class EditProviderModal extends Modal {
         const { contentEl } = this;
         contentEl.empty();
 
-        contentEl.createEl('h2', { text: 'Edit Provider' });
+        contentEl.createEl('h2', { text: 'Edit provider' });
 
         new Setting(contentEl)
             .setName('Name')
@@ -74,7 +74,7 @@ export class EditProviderModal extends Modal {
                             await this.handlers.handleProviderEdit(updatedProvider, this.originalName);
                             this.close();
                         } catch (error) {
-                            console.error('Failed to update provider:', error);
+                            console.error('Failed to update provider:', error instanceof Error ? error.message : String(error));
                         }
                     }))
             .addButton(btn =>

@@ -18,7 +18,7 @@ export class SettingsUIComponents {
         const headerInfo = header.createDiv();
         headerInfo.addClass('yt-summarizer-settings__provider-info');
 
-        const titleEl = headerInfo.createEl('h3', { text: provider.name });
+        headerInfo.createEl('h3', { text: provider.name });
 
         // Right side of header - controls
         const headerControls = header.createDiv({ cls: 'yt-summarizer-settings__provider-controls' });
@@ -43,8 +43,8 @@ export class SettingsUIComponents {
         const iconEl = headerControls.createDiv({ cls: 'yt-summarizer-settings__collapse-icon' });
         setIcon(iconEl, 'chevron-down');
 
-        // Content section
-        const content = accordion.createDiv({ cls: 'yt-summarizer-settings__provider-content' });
+        // Content section (populated later by addProviderAccordion)
+        accordion.createDiv({ cls: 'yt-summarizer-settings__provider-content' });
 
         return accordion;
     }
@@ -96,7 +96,7 @@ export class SettingsUIComponents {
 
     createApiKeySetting(container: HTMLElement, provider: ProviderConfig, handlers: SettingsEventHandlers): Setting {
         return new Setting(container)
-            .setName('API Key')
+            .setName('API key')
             .setDesc(`Enter your ${provider.name} API key`)
             .addText(text => {
                 text
@@ -226,7 +226,7 @@ export class SettingsUIComponents {
 
         // Add Models section
         const modelsSection = content.createDiv();
-        const modelsHeader = modelsSection.createEl('h4', {
+        modelsSection.createEl('h4', {
             text: 'Models',
             cls: 'yt-summarizer-settings__models-header'
         });
@@ -257,7 +257,7 @@ export class SettingsUIComponents {
         const addModelButton = new Setting(modelsSection)
             .addButton(button =>
                 button
-                    .setButtonText('Add Model')
+                    .setButtonText('Add model')
                     .setCta()
                     .onClick(() => {
                         handlers.handleAddModelClick(provider);

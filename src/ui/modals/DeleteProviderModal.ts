@@ -15,19 +15,18 @@ export class DeleteProviderModal extends Modal {
         const { contentEl } = this;
         contentEl.empty();
 
-        contentEl.createEl('h2', { text: 'Delete Provider' });
+        contentEl.createEl('h2', { text: 'Delete provider' });
 
         const messageEl = contentEl.createEl('p', {
             text: `Are you sure you want to delete the provider "${this.provider.name}"?`
         });
-        messageEl.style.marginBottom = '16px';
+        messageEl.addClass('yt-summarizer-settings__modal-message');
 
         if (this.provider.models && this.provider.models.length > 0) {
             const warningEl = contentEl.createEl('p', {
                 text: `Warning: This provider has ${this.provider.models.length} associated model(s). Deleting the provider will also delete all its models.`,
-                cls: 'mod-warning'
+                cls: 'mod-warning yt-summarizer-settings__modal-message'
             });
-            warningEl.style.marginBottom = '16px';
         }
 
         const buttonContainer = contentEl.createDiv({ cls: 'yt-summarizer-settings__button-container' });
@@ -47,7 +46,7 @@ export class DeleteProviderModal extends Modal {
                 await this.handlers.handleProviderDelete(this.provider);
                 this.close();
             } catch (error) {
-                console.error('Failed to delete provider:', error);
+                console.error('Failed to delete provider:', error instanceof Error ? error.message : String(error));
             }
         });
     }

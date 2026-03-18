@@ -35,11 +35,11 @@ export class YouTubeSummarizerPlugin extends Plugin {
 			// Register commands
 			this.registerCommands();
 		} catch (error) {
-			new Notice(`Error: ${error.message}`);
+			new Notice(`Error: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
-	public async saveData(data: any): Promise<void> {
+	public async saveData(data: Record<string, unknown>): Promise<void> {
 		await super.saveData(data);
 		await this.initializeServices();
 	}
@@ -78,7 +78,7 @@ export class YouTubeSummarizerPlugin extends Plugin {
 		this.addCommand({
 			id: 'summarize-youtube-video',
 			name: 'Summarize youtube video',
-			editorCallback: async (editor: Editor, view: MarkdownView) => {
+			editorCallback: async (editor: Editor, _view: MarkdownView) => {
 				try {
 					const selectedText = editor.getSelection().trim();
 					if (
@@ -94,7 +94,7 @@ export class YouTubeSummarizerPlugin extends Plugin {
 						}).open();
 					}
 				} catch (error) {
-					new Notice(`Failed to process video: ${error.message}`);
+					new Notice(`Failed to process video: ${error instanceof Error ? error.message : String(error)}`);
 					console.error('Failed to process video:', error);
 				}
 			},
@@ -104,7 +104,7 @@ export class YouTubeSummarizerPlugin extends Plugin {
 		this.addCommand({
 			id: 'summarize-youtube-video-prompt',
 			name: 'Summarize youtube video (with prompt)',
-			editorCallback: async (editor: Editor, view: MarkdownView) => {
+			editorCallback: async (editor: Editor, _view: MarkdownView) => {
 				try {
 					const selectedText = editor.getSelection().trim();
 					if (
@@ -120,7 +120,7 @@ export class YouTubeSummarizerPlugin extends Plugin {
 						}).open();
 					}
 				} catch (error) {
-					new Notice(`Failed to process video: ${error.message}`);
+					new Notice(`Failed to process video: ${error instanceof Error ? error.message : String(error)}`);
 					console.error('Failed to process video:', error);
 				}
 			},
@@ -169,7 +169,7 @@ export class YouTubeSummarizerPlugin extends Plugin {
 			try {
 				transcript = await this.youtubeService.fetchTranscript(url);
 			} catch (error) {
-				new Notice(`Error: ${error.message}`);
+				new Notice(`Error: ${error instanceof Error ? error.message : String(error)}`);
 				return;
 			}
 			const thumbnailUrl = YouTubeService.getThumbnailUrl(
@@ -184,7 +184,7 @@ export class YouTubeSummarizerPlugin extends Plugin {
 			try {
 				summary = await this.provider.summarizeVideo(transcript.videoId, prompt);
 			} catch (error) {
-				new Notice(`Error: ${error.message}`);
+				new Notice(`Error: ${error instanceof Error ? error.message : String(error)}`);
 				console.error('Failed to fetch transcript:', error);
 				return;
 			}
@@ -201,7 +201,7 @@ export class YouTubeSummarizerPlugin extends Plugin {
 			editor.replaceSelection(content);
 			new Notice('Summary generated successfully!');
 		} catch (error) {
-			new Notice(`Error: ${error.message}`);
+			new Notice(`Error: ${error instanceof Error ? error.message : String(error)}`);
 			console.error('Summary generation failed:', error);
 		} finally {
 			// Reset the processing flag

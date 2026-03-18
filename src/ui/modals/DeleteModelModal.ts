@@ -15,13 +15,13 @@ export class DeleteModelModal extends Modal {
         const { contentEl } = this;
         contentEl.empty();
 
-        contentEl.createEl('h2', { text: 'Delete Model' });
+        contentEl.createEl('h2', { text: 'Delete model' });
 
         const displayName = this.model.displayName || this.model.name;
         const messageEl = contentEl.createEl('p', {
             text: `Are you sure you want to delete the model "${displayName}"?`
         });
-        messageEl.style.marginBottom = '16px';
+        messageEl.addClass('yt-summarizer-settings__modal-message');
 
         const buttonContainer = contentEl.createDiv({ cls: 'yt-summarizer-settings__button-container' });
 
@@ -40,7 +40,7 @@ export class DeleteModelModal extends Modal {
                 await this.handlers.handleModelDelete(this.model);
                 this.close();
             } catch (error) {
-                console.error('Failed to delete model:', error);
+                console.error('Failed to delete model:', error instanceof Error ? error.message : String(error));
             }
         });
     }

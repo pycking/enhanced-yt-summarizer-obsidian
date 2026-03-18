@@ -19,11 +19,11 @@ export class AddModelModal extends Modal {
         const { contentEl } = this;
         contentEl.empty();
 
-        contentEl.createEl('h2', { text: 'Add Model' });
+        contentEl.createEl('h2', { text: 'Add model' });
 
         // Model Name (required)
         new Setting(contentEl)
-            .setName('Model Name')
+            .setName('Model name')
             .setDesc('Enter model name (required)')
             .addText(text =>
                 text
@@ -34,7 +34,7 @@ export class AddModelModal extends Modal {
 
         // Display Name (optional)
         new Setting(contentEl)
-            .setName('Display Name')
+            .setName('Display name')
             .setDesc('Enter display name (optional)')
             .addText(text =>
                 text
@@ -65,7 +65,7 @@ export class AddModelModal extends Modal {
                             await this.handlers.handleModelAdd(newModel);
                             this.close();
                         } catch (error) {
-                            console.error('Failed to add model:', error);
+                            console.error('Failed to add model:', error instanceof Error ? error.message : String(error));
                         }
                     }))
             .addButton(btn =>

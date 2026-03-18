@@ -21,21 +21,20 @@ export class SettingsTab extends PluginSettingTab {
     constructor(app: App, private plugin: YouTubeSummarizerPlugin) {
         super(app, plugin);
         this.settings = plugin.settings;
-        const selectedModel = this.settings.getSelectedModel();
         this.uiComponents = new SettingsUIComponents(app);
 
         // Create callbacks for UI update
         const callbacks: UICallbacks = {
-            onModelAdded: (model) => {
+            onModelAdded: (_model) => {
                 this.reload();
             },
-            onModelDeleted: (model) => {
+            onModelDeleted: (_model) => {
                 this.reload();
             },
-            onModelUpdated: (model) => {
+            onModelUpdated: (_model) => {
                 this.reload();
             },
-            onProviderAdded: (provider) => {
+            onProviderAdded: (_provider) => {
                 this.reload();
             },
             onProviderDeleted: () => {
@@ -77,8 +76,8 @@ export class SettingsTab extends PluginSettingTab {
         const summarySettingsContent = tabContent.createDiv({ cls: 'yt-summarizer-settings__content' });
 
         // Hide inactive tab content
-        aiProvidersContent.style.display = this.currentTab === 'ai-providers' ? 'block' : 'none';
-        summarySettingsContent.style.display = this.currentTab === 'summary-settings' ? 'block' : 'none';
+        aiProvidersContent.toggleClass('yt-summarizer-hidden', this.currentTab !== 'ai-providers');
+        summarySettingsContent.toggleClass('yt-summarizer-hidden', this.currentTab !== 'summary-settings');
 
         // Create tab buttons
         this.createTabButtons(tabList);
@@ -90,8 +89,8 @@ export class SettingsTab extends PluginSettingTab {
 
     private createTabButtons(tabList: HTMLElement): void {
         const tabs = [
-            { name: 'AI Providers', id: 'ai-providers' },
-            { name: 'Summary Settings', id: 'summary-settings' }
+            { name: 'AI providers', id: 'ai-providers' },
+            { name: 'Summary settings', id: 'summary-settings' }
         ];
 
         tabs.forEach(({ name, id }) => {
@@ -117,7 +116,7 @@ export class SettingsTab extends PluginSettingTab {
         const selectedModel = this.settings.getSelectedModel();
 
         new Setting(containerEl)
-            .setName('Active Model')
+            .setName('Active model')
             .setDesc('Select which model to use for generating summaries')
             .addDropdown(dropdown => {
                 const options: Record<string, string> = {};
@@ -136,8 +135,8 @@ export class SettingsTab extends PluginSettingTab {
 
             });
 
-        // Provider Accordions Container
-        const accordionsContainer = containerEl.createDiv({ cls: 'yt-summarizer-settings__provider-accordions' });
+        // Provider Accordions Container (referenced by addProviderAccordion via document.querySelector)
+        containerEl.createDiv({ cls: 'yt-summarizer-settings__provider-accordions' });
 
         // Create accordions for each provider
         this.settings.getProviders().forEach(provider => {
@@ -146,11 +145,11 @@ export class SettingsTab extends PluginSettingTab {
 
         // Add Provider button at the bottom
         const addProviderButton = new Setting(containerEl)
-            .setName('Add New Provider')
+            .setName('Add new provider')
             .setDesc('Add a custom AI provider')
             .addButton(button =>
                 button
-                    .setButtonText('Add Provider')
+                    .setButtonText('Add provider')
                     .setCta()
                     .onClick(() => {
                         const modal = this.modals.createAddProviderModal(this.eventHandlers);
@@ -224,14 +223,12 @@ export class SettingsTab extends PluginSettingTab {
             openedProviderName = openedAccordion.getAttribute('data-provider-name');
         }
 
-        console.log('openedProviderName:', openedProviderName);
         // Refresh the display
         this.display();
 
         // If there was an opened accordion, find and open it in the new display
         if (openedProviderName) {
             const newAccordion = document.querySelector(`[data-provider-name="${openedProviderName}"]`);
-            console.log('newAccordion:', newAccordion);
             if (newAccordion) {
                 newAccordion.addClass('is-expanded');
             }
