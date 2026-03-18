@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-yt-video-summarizer",
+	"name": "enhanced-yt-summarizer",
 	"version": "1.2.1",
-	"description": "Summarize YouTube videos using Gemini AI. Extract transcripts, generate summaries, and create structured notes.",
+	"description": "Summarize YouTube videos using Claude, Gemini, OpenAI and other AI providers. Extract transcripts, generate summaries, and create structured notes.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
@@ -17,7 +17,7 @@
 		"ai",
 		"transcript"
 	],
-	"author": "mbramani",
+	"author": "Sam Peng",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
